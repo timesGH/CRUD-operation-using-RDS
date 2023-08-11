@@ -1,435 +1,99 @@
 import React, { useState, useEffect } from 'react';
-
- 
-
 import axios from 'axios';
 
- 
-
- 
-
- 
-
 interface Person {
-
- 
-
   id: number;
-
- 
-
   first_name: string;
-
- 
-
   last_name: string;
-
- 
-
   phone_number: string;
-
- 
-
 }
 
- 
-
- 
-
- 
-
-const CrudApp: React.FC = () => {
-
- 
-
+const App: React.FC = () => {
   const [persons, setPersons] = useState<Person[]>([]);
-
- 
-
-  const [first_name, setFirstName] = useState('');
-
- 
-
-  const [last_name, setLastName] = useState('');
-
- 
-
-  const [phone_number, setPhoneNumber] = useState('');
-
- 
-
- 
-
- 
-
-  const apiUrl = 'http://localhost:3333/persons'; // Replace with your REST API endpoint URL
-
- 
-
- 
-
- 
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
 
   useEffect(() => {
-
- 
-
     fetchPersons();
-
- 
-
   }, []);
 
- 
-
- 
-
- 
-
   const fetchPersons = async () => {
-
- 
-
     try {
-
- 
-
-      const response = await axios.get(apiUrl);
-
- 
-
+      const response = await axios.get<Person[]>('http://localhost:3333/persons');
       setPersons(response.data);
-
- 
-
     } catch (error) {
-
- 
-
       console.error('Error fetching persons:', error);
-
- 
-
     }
-
- 
-
   };
-
- 
-
- 
-
- 
 
   const createPerson = async () => {
-
- 
-
     try {
-
- 
-
-      const newPerson: Person = {
-
-        first_name,
-
- 
-
-        last_name,
-
- 
-
-        phone_number,
-
-        id: 0
-
+      const newPersonData = {
+        firstName,
+        lastName,
+        phoneNumber
       };
 
- 
+      await axios.post('http://localhost:3333/persons', newPersonData);
 
-      const response = await axios.post(apiUrl, newPerson);
+      fetchPersons(); // Refresh the list after adding a new person
 
- 
-
-      setPersons([...persons, response.data]);
-
- 
-
+      // Clear input fields
       setFirstName('');
-
- 
-
       setLastName('');
-
- 
-
       setPhoneNumber('');
-
- 
-
     } catch (error) {
-
- 
-
       console.error('Error creating person:', error);
-
- 
-
     }
-
- 
-
   };
-
- 
-
- 
-
- 
-
-  const updatePerson = async (id: number) => {
-
- 
-
-    try {
-
- 
-
-      const updatedPerson: Person = {
-
- 
-
-        id,
-
- 
-
-        first_name,
-
- 
-
-        last_name,
-
- 
-
-        phone_number,
-
- 
-
-      };
-
- 
-
-      await axios.put(`${apiUrl}/${id}`, updatedPerson);
-
- 
-
-      fetchPersons();
-
- 
-
-    } catch (error) {
-
- 
-
-      console.error('Error updating person:', error);
-
- 
-
-    }
-
- 
-
-  };
-
- 
-
- 
-
- 
-
-  const deletePerson = async (id: number) => {
-
- 
-
-    try {
-
- 
-
-      await axios.delete(`${apiUrl}/${id}`);
-
- 
-
-      setPersons(persons.filter((person) => person.id !== id));
-
- 
-
-    } catch (error) {
-
- 
-
-      console.error('Error deleting person:', error);
-
- 
-
-    }
-
- 
-
-  };
-
- 
-
- 
-
- 
 
   return (
-
- 
-
     <div>
-
- 
-
-      <h1>CRUD App with Speak-to-API</h1>
-
- 
-
+      <h1>Person Data</h1>
       <div>
-
- 
-
         <input
-
- 
-
           type="text"
-
- 
-
           placeholder="First Name"
-
- 
-
-          value={first_name}
-
- 
-
+          value={firstName}
           onChange={(e) => setFirstName(e.target.value)}
-
- 
-
         />
-
- 
-
         <input
-
- 
-
           type="text"
-
- 
-
           placeholder="Last Name"
-
- 
-
-          value={last_name}
-
- 
-
+          value={lastName}
           onChange={(e) => setLastName(e.target.value)}
-
- 
-
         />
-
- 
-
         <input
-
- 
-
           type="text"
-
- 
-
           placeholder="Phone Number"
-
- 
-
-          value={phone_number}
-
- 
-
+          value={phoneNumber}
           onChange={(e) => setPhoneNumber(e.target.value)}
-
- 
-
         />
-
- 
-
         <button onClick={createPerson}>Add Person</button>
-
- 
-
       </div>
-
- 
-
-      <ul>
-
- 
-
-        {persons.map((person) => (
-
- 
-
-          <li key={person.id}>
-
- 
-
-            {person.first_name} {person.last_name} - {person.phone_number}
-
- 
-
-            <button onClick={() => updatePerson(person.id)}>Edit</button>
-
- 
-
-            <button onClick={() => deletePerson(person.id)}>Delete</button>
-
- 
-
-          </li>
-
- 
-
-        ))}
-
- 
-
-      </ul>
-
- 
-
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Phone Number</th>
+          </tr>
+        </thead>
+        <tbody>
+          {persons.map((person) => (
+            <tr key={person.id}>
+              <td>{person.id}</td>
+              <td>{person.first_name}</td>
+              <td>{person.last_name}</td>
+              <td>{person.phone_number}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
-
- 
-
   );
-
- 
-
 };
 
- 
-
- 
-
- 
-
-export default CrudApp;
+export default App;
