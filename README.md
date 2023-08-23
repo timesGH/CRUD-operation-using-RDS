@@ -37,7 +37,7 @@ This repository contains a simple web application built using Express.js, Postgr
 3. **Backend Setup:**
 
    ```bash
-   cd backend
+   cd react-crud-speech
    npm install
    npx ts-node app.ts
    ```
@@ -47,7 +47,7 @@ This repository contains a simple web application built using Express.js, Postgr
 4. **Frontend Setup:**
 
    ```bash
-   cd frontend
+   cd rest-api
    npm install
    npm start
    ```
