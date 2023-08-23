@@ -77,7 +77,7 @@ express-postgresql-crud-app/
 
 ## Screenshots
 
-_Insert screenshots or GIFs of the application in action._
+<img src="screenshot.png">
 
 ## Contributions
 
