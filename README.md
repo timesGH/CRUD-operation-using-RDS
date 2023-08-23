@@ -39,7 +39,7 @@ This repository contains a simple web application built using Express.js, Postgr
    ```bash
    cd backend
    npm install
-   npm start
+   npx ts-node app.ts
    ```
 
    The Express server will start running on http://localhost:3333.
